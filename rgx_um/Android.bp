@@ -1,0 +1,522 @@
+cc_defaults {
+    name: "rogue_libs",
+    compile_multilib: "both",
+    strip: {
+        none: true,
+    },
+    shared_libs: [
+        "libc++",
+        "libdl",
+        "liblog",
+        "libutils",
+        "libdrm",
+        "libc",
+        "libm",
+        "libcutils",
+        "libz",
+    ],
+    allow_undefined_symbols: true,
+}
+
+// egl
+cc_prebuilt_library_shared {
+    name: "libgpudataproducer",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libgpudataproducer.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libgpudataproducer.so",
+            ],
+        },
+    },
+}
+
+cc_prebuilt_library_shared {
+    name: "libEGL_powervr",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/egl/libEGL_powervr.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/egl/libEGL_powervr.so",
+            ],
+        },
+    },
+    shared_libs: ["libIMGegl"],
+    relative_install_path: "egl",
+}
+
+cc_prebuilt_library_shared {
+    name: "libGLESv1_CM_powervr",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/egl/libGLESv1_CM_powervr.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/egl/libGLESv1_CM_powervr.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libIMGegl",
+        "libsrv_um",
+        "libsync",
+        "libusc",
+    ],
+    relative_install_path: "egl",
+}
+
+cc_prebuilt_library_shared {
+    name: "libGLESv2_powervr",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/egl/libGLESv2_powervr.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/egl/libGLESv2_powervr.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libIMGegl",
+        "libglslcompiler",
+        "libsrv_um",
+        "libsync",
+        "libusc",
+    ],
+    relative_install_path: "egl",
+}
+
+cc_prebuilt_library_shared {
+    name: "gralloc.am62x",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/hw/gralloc.am62x.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/hw/gralloc.am62x.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libc++",
+        "libdmabufheap",
+        "libdrm",
+        "libhardware",
+        "libion",
+        "liblog",
+        "libsrv_um",
+        "libsync",
+        "libutils",
+        "libutilscallstack",
+    ], 
+    relative_install_path: "hw",
+}
+
+cc_prebuilt_library_shared {
+    name: "vulkan.powervr",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/hw/vulkan.powervr.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/hw/vulkan.powervr.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libhardware",
+        "libnativewindow",
+        "libsrv_um",
+        "libsync",
+        "libufwriter",
+        "libusc",
+    ],
+    relative_install_path: "hw",
+    allow_undefined_symbols: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libglslcompiler",
+    proprietary: true,
+    compile_multilib: "both",
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libglslcompiler.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libglslcompiler.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libsrv_um",
+        "libusc",
+    ],
+    allow_undefined_symbols: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libIMGegl",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "both",
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libIMGegl.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libIMGegl.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libhardware",
+        "libsrv_um",
+        "libsync",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "libpvrANDROID_WSEGL",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libpvrANDROID_WSEGL.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libpvrANDROID_WSEGL.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libhardware",
+        "libsrv_um",
+        "libsync",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "libPVROCL",
+    defaults: ["rogue_libs"],
+    proprietary: true,
+    compile_multilib: "both",
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libPVROCL.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libPVROCL.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libhardware",
+        "libsrv_um",
+        "libsync",
+        "libusc",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "libPVRScopeServices",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "both",
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libPVRScopeServices.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libPVRScopeServices.so",
+            ],
+        },
+    },
+    shared_libs: ["libsync"],
+}
+
+cc_prebuilt_library_shared {
+    name: "libsrv_um",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libsrv_um.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libsrv_um.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libsync",
+        "libutilscallstack",
+    ],
+    allow_undefined_symbols: true,
+}
+
+cc_prebuilt_library_shared {
+    name: "libufwriter",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libufwriter.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libufwriter.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "libsrv_um",
+        "libusc",
+    ],
+}
+
+cc_prebuilt_library_shared {
+    name: "libusc",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/libusc.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/libusc.so",
+            ],
+        },
+    },
+    shared_libs: ["libsrv_um"],
+}
+
+cc_prebuilt_library_shared {
+    name: "android.hardware.graphics.mapper@4.0-impl",
+    proprietary: true,
+    compile_multilib: "both",
+    defaults: ["rogue_libs"],
+    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.graphics.mapper@4.0-passthrough.img.xml"],
+    arch: {
+        arm: {
+            srcs: [
+                "vendor/lib/hw/android.hardware.graphics.mapper@4.0-impl.so",
+            ],
+        },
+        arm64: {
+            srcs: [
+                "vendor/lib64/hw/android.hardware.graphics.mapper@4.0-impl.so",
+            ],
+        },
+    },
+    shared_libs: [
+        "android.hardware.graphics.mapper@4.0",
+        "libbase",
+        "libgralloctypes",
+        "libhardware",
+        "libhidlbase",
+        "libhidlmemory",
+    ],
+    relative_install_path: "hw",
+}
+
+// firmware
+prebuilt_firmware {
+    name: "rgx.fw.33.15.11.3",
+    vendor: true,
+    src: "vendor/firmware/rgx.fw.33.15.11.3",
+    proprietary: true,
+}
+
+prebuilt_firmware {
+    name: "rgx.sh.33.15.11.3",
+    vendor: true,
+    src: "vendor/firmware/rgx.sh.33.15.11.3",
+    proprietary: true,
+}
+
+//binaries
+
+cc_prebuilt_binary {
+    name: "android.hardware.graphics.allocator@4.0-service.img",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "64",
+    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.graphics.allocator@4.0.img.xml"],
+    init_rc: [
+        "vendor/etc/init/android.hardware.graphics.allocator@4.0-service.img.rc",
+    ],
+    srcs: ["vendor/bin/hw/android.hardware.graphics.allocator@4.0-service"],
+    shared_libs: [
+        "android.hardware.graphics.allocator@4.0",
+        "libbase",
+        "libgralloctypes",
+        "libhardware",
+        "libhidlbase",
+        "libhidlmemory",
+    ],
+    relative_install_path: "hw",
+}
+
+cc_prebuilt_binary {
+    name: "android.hardware.atrace@1.0-service.img",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "64",
+    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.atrace@1.0-service.img.xml"],
+    init_rc: [
+        "vendor/etc/init/android.hardware.atrace@1.0-service.img.rc",
+    ],
+    srcs: ["vendor/bin/hw/android.hardware.atrace@1.0-service.img"],
+    shared_libs: [
+        "android.hardware.atrace@1.0",
+        "libbase",
+        "libc++",
+        "libhidlbase",
+        "libhidlmemory",
+        "liblog",
+        "libutils",
+    ],
+    relative_install_path: "hw",
+}
+
+cc_prebuilt_binary {
+    name: "android.hardware.dumpstate@1.1-service.img",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "64",
+    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.dumpstate@1.1-service.img.xml"],
+    init_rc: [
+        "vendor/etc/init/android.hardware.dumpstate@1.1-service.img.rc",
+    ],
+    srcs: ["vendor/bin/hw/android.hardware.dumpstate@1.1-service.img"],
+     shared_libs: [
+        "android.hardware.dumpstate@1.0",
+        "android.hardware.dumpstate@1.1",
+        "libbase",
+        "libc++",
+        "libdumpstateutil",
+        "libhidlbase",
+        "libhidlmemory",
+        "liblog",
+        "libutils",
+    ],
+    relative_install_path: "hw",
+}
+
+cc_prebuilt_binary {
+    name: "android.hardware.memtrack-service.img",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "64",
+    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.memtrack.aidl.img.xml"],
+    init_rc: [
+        "vendor/etc/init/android.hardware.memtrack.aidl.img.rc",
+    ],
+    srcs: ["vendor/bin/hw/android.hardware.memtrack-service.img"],
+     shared_libs: [
+        "android.hardware.memtrack-V1-ndk_platform",
+        "libbase",
+        "libbinder_ndk",
+        "libc++",
+        "liblog",
+    ],
+    relative_install_path: "hw",
+}
+
+cc_prebuilt_binary {
+    name: "android.hardware.thermal@2.0-service.img",
+    proprietary: true,
+    defaults: ["rogue_libs"],
+    compile_multilib: "64",
+    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.thermal@2.0.img.xml"],
+    init_rc: [
+        "vendor/etc/init/android.hardware.thermal@2.0-service.img.rc",
+    ],
+    srcs: ["vendor/bin/hw/android.hardware.thermal@2.0-service.img"],
+    shared_libs: [
+        "android.hardware.thermal@1.0",
+        "android.hardware.thermal@2.0",
+        "libbase",
+        "libc++",
+        "libhardware",
+        "libhidlbase",
+        "libhidlmemory",
+        "liblog",
+        "libutils",
+    ],
+    relative_install_path: "hw",
+}
+
+cc_prebuilt_binary {
+    name: "pvrsrvctl",
+    srcs: ["vendor/bin/pvrsrvctl"],
+    shared_libs: ["libc"],
+    strip: { none: true, },
+    vendor: true,
+}

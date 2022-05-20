@@ -1,0 +1,18 @@
+on boot
+    # debugfs
+    chmod 0666 /sys/kernel/debug/pvr/apphint/EnableFTraceGPU
+    chmod 0666 /sys/kernel/debug/tracing/events/rogue/rogue_firmware_activity/enable
+    chmod 0666 /sys/kernel/debug/tracing/events/rogue/rogue_job_enqueue/enable
+    chmod 0666 /sys/kernel/debug/tracing/events/rogue/rogue_sched_switch/enable
+
+    # tracefs
+    chmod 0666 /proc/pvr/apphint/EnableFTraceGPU
+    chmod 0666 /sys/kernel/tracing/events/rogue/rogue_job_enqueue/enable
+    chmod 0666 /sys/kernel/tracing/events/rogue/rogue_firmware_activity/enable
+    chmod 0666 /sys/kernel/tracing/events/rogue/rogue_sched_switch/enable
+
+service atrace-hal-1-0 /vendor/bin/hw/android.hardware.atrace@1.0-service.img
+    interface android.hardware.atrace@1.0::IAtraceDevice default
+    class early_hal
+    user system
+    group system
