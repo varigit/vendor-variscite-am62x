@@ -43,3 +43,9 @@ PRODUCT_PACKAGES += \
 	android.hardware.memtrack-service.img \
 	android.hardware.thermal@2.0-service.img
 
+# Wifi firmware
+PRODUCT_PACKAGES += \
+	regulatory.db \
+	regulatory.db.p7s \
+	wl18xx-fw-4.bin \
+	wl18xx-conf.bin

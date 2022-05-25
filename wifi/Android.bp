@@ -1,0 +1,31 @@
+// Wifi firmware
+prebuilt_firmware {
+    name: "regulatory.db",
+    vendor: true,
+    src: "vendor/firmware/regulatory.db",
+    proprietary: true,
+}
+
+prebuilt_firmware {
+    name: "regulatory.db.p7s",
+    vendor: true,
+    src: "vendor/firmware/regulatory.db.p7s",
+    proprietary: true,
+}
+
+prebuilt_firmware {
+    name: "wl18xx-fw-4.bin",
+    vendor: true,
+    src: "vendor/firmware/ti-connectivity/wl18xx-fw-4.bin",
+    sub_dir: "ti-connectivity",
+    proprietary: true,
+}
+
+prebuilt_firmware {
+    name: "wl18xx-conf.bin",
+    vendor: true,
+    src: "vendor/firmware/ti-connectivity/wl18xx-conf.bin",
+    sub_dir: "ti-connectivity",
+    proprietary: true,
+}
+
