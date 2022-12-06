@@ -1,4 +1,4 @@
-version rogueddk_1.15@6133109
+version rogueddk_1.18@6276027
 file /vendor/bin/../etc/init/android.hardware.graphics.allocator@4.0-service.img.rc
 file /vendor/bin/../etc/vintf/manifest/android.hardware.graphics.allocator@4.0.img.xml
 file /vendor/bin/../etc/init/android.hardware.atrace@1.0-service.img.rc

@@ -1,3 +1,5 @@
+#!/bin/sh
+
 ################################################################################
 # @Copyright     Copyright (c) Imagination Technologies Ltd.
 #                All Rights Reserved
@@ -167,8 +169,8 @@ perform_check() {
 
     echo -n "Checking for firmware log groups .... "
     local FW_LOG_GROUPS_EN=false
-    if [ -f $PVR_DEBUGFS_PATH/apphint/0/EnableLogGroup ] && \
-       [ $(cat $PVR_DEBUGFS_PATH/apphint/0/EnableLogGroup) != "none" ]; then
+    if [ -f $PVR_DEBUGFS_PATH/gpu00/apphint/EnableLogGroup ] && \
+       [ $(cat $PVR_DEBUGFS_PATH/gpu00/apphint/EnableLogGroup) != "none" ]; then
         FW_LOG_GROUPS_EN=true
     else
         if [ -f $PVRINI_PATH ]; then
@@ -282,51 +284,66 @@ dump_fw_snapshot() {
         fi
     fi
 
-    local FW_TRACE=$PVR_DEBUGFS_PATH/firmware_trace
-    local DEBUG_DUMP=$PVR_DEBUGFS_PATH/debug_dump
+    # handle multidevice case where there can be per device (gpuXX)
+    # subdirectories
+    local DEVICES="$(ls -d $PVR_DEBUGFS_PATH/gpu* 2>/dev/null)"
+    if [ -z "$DEVICES" ]; then
+        local DEVICES="$PVR_DEBUGFS_PATH"
+    fi
 
-    for IDX in 1 2; do
-        # if there is a firmware log file dump it for our convenience
-        if [ -f $FW_TRACE ]; then
-            echo ""
-            echo "==== firmware_trace ($IDX) ===="
-            echo ""
-            cat $FW_TRACE
+    for PVR_DEBUGFS_DEVICE_PATH in $DEVICES; do
+        local DEVICE_ID=$(basename $PVR_DEBUGFS_DEVICE_PATH)
+        local FW_TRACE=$(readlink -f $PVR_DEBUGFS_DEVICE_PATH)/firmware_trace
+        local DEBUG_DUMP=$(readlink -f $PVR_DEBUGFS_DEVICE_PATH)/debug_dump
+
+        # in case the script is run on an older DDK with no device subdirs
+        if [ "${DEVICE_ID}" = "pvr" ]; then
+            local DEVICE_ID="gpu00"
         fi
 
-        # if there is debug_dump file then dump it but if for some reason it's
-        # absent use dmesg to obtain it
-        if [ -f $DEBUG_DUMP ]; then
-            echo ""
-            echo "==== debug_dump ($IDX) ===="
-            echo ""
-            cat $DEBUG_DUMP
-        else
-            echo ""
-            echo "==== dmesg ($IDX) ===="
-            echo ""
-            if [ -c /dev/kmsg ]; then
-                echo "" >/dev/kmsg
-                echo "==== debug_dump ($IDX) ====" >/dev/kmsg
-                echo "" >/dev/kmsg
+        for IDX in 1 2; do
+            # if there is a firmware log file dump it for our convenience
+            if [ -f $FW_TRACE ]; then
+                echo ""
+                echo "==== firmware_trace ($DEVICE_ID, $IDX) ===="
+                echo ""
+                cat $FW_TRACE
             fi
-            if command -v pvrdebug >/dev/null 2>&1; then
-                if ! pvrdebug -dd >/dev/null 2>&1; then
-                    if [ -c /dev/kmsg ]; then
-                        echo "pvrdebug failed" >/dev/kmsg
+
+            # if there is debug_dump file then dump it but if for some reason
+            # it's absent use dmesg to obtain it
+            if [ -f $DEBUG_DUMP ]; then
+                echo ""
+                echo "==== debug_dump ($DEVICE_ID, $IDX) ===="
+                echo ""
+                cat $DEBUG_DUMP
+            else
+                echo ""
+                echo "==== dmesg ($DEVICE_ID, $IDX) ===="
+                echo ""
+                if [ -c /dev/kmsg ]; then
+                    echo "" >/dev/kmsg
+                    echo "==== debug_dump ($DEVICE_ID, $IDX) ====" >/dev/kmsg
+                    echo "" >/dev/kmsg
+                fi
+                if command -v pvrdebug >/dev/null 2>&1; then
+                    if ! pvrdebug -dd >/dev/null 2>&1; then
+                        if [ -c /dev/kmsg ]; then
+                            echo "pvrdebug failed" >/dev/kmsg
+                        fi
                     fi
                 fi
+                dmesg
             fi
-            dmesg
-        fi
 
-        # skip sleep on last iteration
-        if [ $IDX -ne 2 ]; then
-            # Android, ChromeOS and most Linux distributions accept time as
-            # a floating point number so wait for 10ms
-            # but e.g. busybox supports only integers so wait for 1s
-            if ! sleep 0.01 >/dev/null 2>&1; then sleep 1; fi
-        fi
+            # skip sleep on last iteration
+            if [ $IDX -ne 2 ]; then
+                # Android, ChromeOS and most Linux distributions accept time as
+                # a floating point number so wait for 10ms
+                # but e.g. busybox supports only integers so wait for 1s
+                if ! sleep 0.01 >/dev/null 2>&1; then sleep 1; fi
+            fi
+        done
     done
 }
 
