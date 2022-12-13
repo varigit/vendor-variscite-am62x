@@ -40,8 +40,7 @@ PRODUCT_PACKAGES += \
 	rgx.fw.33.15.11.3 \
 	android.hardware.atrace@1.0-service.img \
 	android.hardware.dumpstate@1.1-service.img \
-	android.hardware.memtrack-service.img \
-	android.hardware.thermal@2.0-service.img
+	android.hardware.memtrack-service.img
 
 # Wifi firmware
 PRODUCT_PACKAGES += \
