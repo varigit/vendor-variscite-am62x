@@ -471,26 +471,6 @@ cc_prebuilt_binary {
 }
 
 cc_prebuilt_binary {
-    name: "android.hardware.memtrack-service.img",
-    proprietary: true,
-    defaults: ["rogue_libs"],
-    compile_multilib: "64",
-    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.memtrack.aidl.img.xml"],
-    init_rc: [
-        "vendor/etc/init/android.hardware.memtrack.aidl.img.rc",
-    ],
-    srcs: ["vendor/bin/hw/android.hardware.memtrack-service.img"],
-     shared_libs: [
-        "android.hardware.memtrack-V1-ndk_platform",
-        "libbase",
-        "libbinder_ndk",
-        "libc++",
-        "liblog",
-    ],
-    relative_install_path: "hw",
-}
-
-cc_prebuilt_binary {
     name: "pvrsrvctl",
     srcs: ["vendor/bin/pvrsrvctl"],
     shared_libs: ["libc"],
