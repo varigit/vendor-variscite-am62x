@@ -425,28 +425,6 @@ cc_prebuilt_binary {
 }
 
 cc_prebuilt_binary {
-    name: "android.hardware.atrace@1.0-service.img",
-    proprietary: true,
-    defaults: ["rogue_libs"],
-    compile_multilib: "64",
-    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.atrace@1.0-service.img.xml"],
-    init_rc: [
-        "vendor/etc/init/android.hardware.atrace@1.0-service.img.rc",
-    ],
-    srcs: ["vendor/bin/hw/android.hardware.atrace@1.0-service.img"],
-    shared_libs: [
-        "android.hardware.atrace@1.0",
-        "libbase",
-        "libc++",
-        "libhidlbase",
-        "libhidlmemory",
-        "liblog",
-        "libutils",
-    ],
-    relative_install_path: "hw",
-}
-
-cc_prebuilt_binary {
     name: "pvrsrvctl",
     srcs: ["vendor/bin/pvrsrvctl"],
     shared_libs: ["libc"],

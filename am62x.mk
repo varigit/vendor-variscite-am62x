@@ -37,8 +37,7 @@ PRODUCT_PACKAGES += \
 	android.hardware.graphics.mapper@4.0-impl \
 	android.hardware.graphics.allocator@4.0-service.img \
 	rgx.sh.33.15.11.3 \
-	rgx.fw.33.15.11.3 \
-	android.hardware.atrace@1.0-service.img
+	rgx.fw.33.15.11.3
 
 # Wifi firmware
 PRODUCT_PACKAGES += \
