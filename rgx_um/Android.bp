@@ -447,30 +447,6 @@ cc_prebuilt_binary {
 }
 
 cc_prebuilt_binary {
-    name: "android.hardware.dumpstate@1.1-service.img",
-    proprietary: true,
-    defaults: ["rogue_libs"],
-    compile_multilib: "64",
-    vintf_fragments: ["vendor/etc/vintf/manifest/android.hardware.dumpstate@1.1-service.img.xml"],
-    init_rc: [
-        "vendor/etc/init/android.hardware.dumpstate@1.1-service.img.rc",
-    ],
-    srcs: ["vendor/bin/hw/android.hardware.dumpstate@1.1-service.img"],
-     shared_libs: [
-        "android.hardware.dumpstate@1.0",
-        "android.hardware.dumpstate@1.1",
-        "libbase",
-        "libc++",
-        "libdumpstateutil",
-        "libhidlbase",
-        "libhidlmemory",
-        "liblog",
-        "libutils",
-    ],
-    relative_install_path: "hw",
-}
-
-cc_prebuilt_binary {
     name: "pvrsrvctl",
     srcs: ["vendor/bin/pvrsrvctl"],
     shared_libs: ["libc"],
