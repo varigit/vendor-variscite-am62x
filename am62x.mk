@@ -45,3 +45,4 @@ PRODUCT_PACKAGES += \
 	regulatory.db.p7s \
 	wl18xx-fw-4.bin \
 	wl18xx-conf.bin
+
