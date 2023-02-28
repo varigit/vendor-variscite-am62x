@@ -46,3 +46,6 @@ PRODUCT_PACKAGES += \
 	wl18xx-fw-4.bin \
 	wl18xx-conf.bin
 
+# ti-sysfw
+PRODUCT_PACKAGES += \
+	ti-fs-stub-firmware-am62x-gp-signed
