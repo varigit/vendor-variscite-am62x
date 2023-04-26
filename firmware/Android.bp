@@ -1,6 +1,6 @@
 // ti-sysfw firmware
 prebuilt_firmware {
-    name: "ti-fs-stub-firmware-am62x-gp-signed",
+    name: "ti-fs-stub-firmware-am62x-gp-signed.bin",
     vendor: true,
     src: "vendor/firmware/ti-sysfw/ti-fs-stub-firmware-am62x-gp-signed.bin",
     sub_dir: "ti-sysfw",

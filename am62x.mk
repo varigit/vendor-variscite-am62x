@@ -48,4 +48,4 @@ PRODUCT_PACKAGES += \
 
 # ti-sysfw
 PRODUCT_PACKAGES += \
-	ti-fs-stub-firmware-am62x-gp-signed
+	ti-fs-stub-firmware-am62x-gp-signed.bin
