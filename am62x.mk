@@ -49,3 +49,7 @@ PRODUCT_PACKAGES += \
 # ti-sysfw
 PRODUCT_PACKAGES += \
 	ti-fs-stub-firmware-am62x-gp-signed.bin
+
+# ti-ipc
+PRODUCT_PACKAGES += \
+	am62-mcu-m4f0_0-fw

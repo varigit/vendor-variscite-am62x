@@ -6,3 +6,11 @@ prebuilt_firmware {
     sub_dir: "ti-sysfw",
     proprietary: true,
 }
+
+// ti-ipc firmware
+prebuilt_firmware {
+    name: "am62-mcu-m4f0_0-fw",
+    vendor: true,
+    src: "vendor/firmware/ti-ipc/am62-mcu-m4f0_0-fw",
+    proprietary: true,
+}
