@@ -40,7 +40,7 @@ if [ x"$OS" = xLINUX ]; then
     PYTHON_BIN="`which \"python\"`"
 fi
 
-# FUNCTIONS FOR SAVING AND RESTORING STATE
+# FUNCTIONS FOR SAVING STATE OF FILTER FILES
 preserve_state() {
   PVR_DBG_LEVEL_OLD="$PVRDebugLevel"
 
@@ -57,6 +57,18 @@ preserve_state() {
   done
 }
 
+# FUNCTIONS FOR SAVING AND RESTORING STATE IF USING THE PVRDEBUG TOOL
+preserve_state_tool() {
+  PVR_DBG_LEVEL_OLD="$PVRDebugLevel"
+  for ID in $DEVICES; do
+    eval "_FW_FILTER_FILE=\$HWPERF_FW_FILTER_FILE_$ID"
+    eval "HWPERF_FW_FILTER_${ID}_OLD=\"\$(pvrdebug -device $ID -nobanner -di $_FW_FILTER_FILE | grep -G 0x0*)\""
+    eval "_HOST_FILTER_FILE=\$HWPERF_HOST_FILTER_FILE_$ID"
+    eval "HWPERF_HOST_FILTER_${ID}_OLD=\"\$(pvrdebug -device $ID -nobanner -di $_HOST_FILTER_FILE | grep -G 0x0*)\""
+  done
+}
+
+# FUNCTIONS FOR REWRITING THE PREVIOUS STATE OF FILTER FILES
 restore_state() {
   export PVRDebugLevel=$PVR_DBG_LEVEL_OLD
 
@@ -74,6 +86,31 @@ restore_state() {
       echo $_HOST_FILTER > $_HOST_FILTER_FILE
     fi
   done
+}
+
+# FUNCTIONS FOR REWRITING THE PREVIOUS STATE OF FILTER FILES IF USING THE PVRDEBUG TOOL
+restore_state_tool() {
+  export PVRDebugLevel=$PVR_DBG_LEVEL_OLD
+
+  if [ $MODE=="fw" ]; then
+    for ID in $DEVICES; do
+      eval "_FW_FILTER=\$HWPERF_FW_FILTER_${ID}_OLD"
+      eval "_FW_FILTER_FILE=\$HWPERF_FW_FILTER_FILE_${ID}"
+      if [ x"$_FW_FILTER" != x ]; then
+        pvrdebug -device $ID -diset $_FW_FILTER_FILE $_FW_FILTER
+      fi
+      done
+  fi
+
+  if [ $MODE=="host" ]; then
+    for ID in $DEVICES; do
+      eval "_HOST_FILTER=\$HWPERF_HOST_FILTER_${ID}_OLD"
+      eval "_HOST_FILTER_FILE=\$HWPERF_HOST_FILTER_FILE_${ID}"
+      if [ x"$_HOST_FILTER" != x ]; then
+        pvrdebug -device $ID -diset $_HOST_FILTER_FILE $_HOST_FILTER
+      fi
+    done
+  fi
 }
 
 OUT1_JSON_FILE_PREFIX="hwperf_fw_"
@@ -149,24 +186,24 @@ do
          echo "|     -r  : Reset streams before capturing data."
          echo "|     -tlbin         : In addition to regular data also retain packet headers"
          echo "|                      in the binary file (generates *.tlbin files)."
-         echo "|     -wa-v1cntids   : Insert counter IDs alongside the performance counter"
-         echo "|                      values in the processed hwperfbin2jsont output."
-         echo "|                      NOTE:       For Volcanic Drivers ONLY"
          echo "+-----------------------------------------------------------------------------+"
          exit 0
         ;;
-    -fw) HWPERF_FW_FILTER=$next
+    -fw)
+         HWPERF_FW_FILTER=$next
+         MODE="fw"
          skip_next="true"
         ;;
-    -host) HWPERF_HOST_FILTER=$next
+    -host)
+         HWPERF_HOST_FILTER=$next
+         MODE="host"
          skip_next="true"
         ;;
     -r) HWPERF_RESET_STREAMS="true"
         ;;
     -tlbin) RETAIN_TL_HEADERS=yes
         ;;
-    -wa-v1cntids)
-        HWPERF_V1CNT="true"
+    -wa-v1cntids) HWPERF_V1CNT="true"
         ;;
     *)  echo "[Error] Argument '$curr' not recognized."
         echo "        Run '$0 -h' for more information."; exit 1 ;;
@@ -208,9 +245,6 @@ if [ x"$EXEC_LINE" != x ]; then
     echo "[Error] hwperfbin2jsont not found"
     exit 1
   fi
-  if [ "$HWPERF_V1CNT" = "true" ]; then
-    EXEC_LINE="$EXEC_LINE -wa-v1cntids"
-  fi
 fi
 
 # ENVIRONMENT VARIABLES
@@ -240,20 +274,20 @@ if [ x"$HWPERF_FW_FILTER" != x ] || [ x"$HWPERF_HOST_FILTER" != x ]; then
     USERID=`id -u`
   fi
 
-  # root privileges are needed to set filters - return error if executed
-  # as regular user
-  if [ "$USERID" != "0" ]; then
-    echo "[Error] This script needs to be executed with root privileges"
-    exit 1
-  fi
-
-  # if we have root privileges we can check for the debug files 
+  # check if user is the root user
   if [ -d "/sys/kernel/debug/pvr" ]; then
+    METHOD="file"
     DEBUG_DIR="/sys/kernel/debug/pvr"
+  # check if user has a proc directory
   elif [ -d "/proc/pvr" ]; then
+    METHOD="file"
     DEBUG_DIR="/proc/pvr"
+  # check if user has the pvrdebug tool
+  elif [ -f "/usr/local/bin/pvrdebug" ]; then
+    METHOD="tool"
+    DEBUG_DIR="/pvr"
   else
-    echo "Error: No valid debug path (Neither /sys/kernel/debug/pvr or /proc/pvr exist)"
+    echo "Error: No valid debug path"
     exit 1
   fi
 fi
@@ -266,47 +300,60 @@ fi
 
 # needs to be executed before "preserve_state"
 for ID in $DEVICES; do
-  eval "HWPERF_FW_FILTER_FILE_$ID=\"$DEBUG_DIR/gpu$ID/apphint/HWPerfFWFilter\""
-  eval "HWPERF_HOST_FILTER_FILE_$ID=\"$DEBUG_DIR/gpu$ID/apphint/HWPerfHostFilter\""
+    eval "HWPERF_FW_FILTER_FILE_$ID=\"$DEBUG_DIR/gpu$ID/apphint/HWPerfFWFilter\""
+    eval "HWPERF_HOST_FILTER_FILE_$ID=\"$DEBUG_DIR/gpu$ID/apphint/HWPerfHostFilter\""
 done
-
-preserve_state
+# choosing how to preserve state
+if [ x"$METHOD" = "xtool" ]; then
+  preserve_state_tool
+else
+  preserve_state
+fi
 
 export PVRDebugLevel=0x00
-
+# error handling block - restores the state of filter files if any errors occur.
 for ID in $DEVICES; do
   eval "_FW_FILTER_FILE=\$HWPERF_FW_FILTER_FILE_$ID"
   eval "_HOST_FILTER_FILE=\$HWPERF_HOST_FILTER_FILE_$ID"
 
   if [ x"$HWPERF_FW_FILTER" != x ] || [ x"$HWPERF_HOST_FILTER" != x ]; then
     if [ x"$HWPERF_FW_FILTER" != x ]; then
-      if [ ! -f $_FW_FILTER_FILE ] && [ x"$DEVICE" != xall ]; then
-        echo "[Error] Could not set HW performance events filter"
-        restore_state
-        exit 1
+
+      # using pvrdebug to set the firmware filter
+      if [ x"$METHOD" = "xtool" ]; then
+        pvrdebug -device $ID -hwp_fw $HWPERF_FW_FILTER
+      else
+        echo $HWPERF_FW_FILTER 2>/dev/null > $_FW_FILTER_FILE 2>/dev/null
       fi
 
-      echo $HWPERF_FW_FILTER 2>/dev/null > $_FW_FILTER_FILE 2>/dev/null
       if [ $? != 0 ] && [ x"$DEVICE" != xall ]; then
         echo "[Error] Failed to set HW performance filter"
         echo "        Check if the parameters passed to the script are valid"
-        restore_state
-        exit 1
+        if [ x"$METHOD" = "xtool" ]; then
+          restore_state_tool
+        else
+          restore_state
+        fi
       fi
     fi
 
     if [ x"$HWPERF_HOST_FILTER" != x ]; then
-      if [ ! -f $_HOST_FILTER_FILE ] && [ x"$DEVICE" != xall ]; then
-        echo "[Error] Could not set host events filter"
-        restore_state
-        exit 1
+
+      # using pvrdebug to set the host filter
+      if [ x"$METHOD" = "xtool" ]; then
+        pvrdebug -device $ID -hwp_host $HWPERF_HOST_FILTER
+      else
+        echo $HWPERF_HOST_FILTER 2>/dev/null > $_HOST_FILTER_FILE 2>/dev/null
       fi
 
-      echo $HWPERF_HOST_FILTER 2>/dev/null > $_HOST_FILTER_FILE 2>/dev/null
       if [ $? != 0 ] && [ x"$DEVICE" != xall ]; then
         echo "[Error] Failed to set host events filter"
         echo "        Check if the parameters passed to the script are valid"
-        restore_state
+        if [ x"$METHOD" = "xtool" ]; then
+          restore_state_tool
+        else
+          restore_state
+        fi
         exit 1
       fi
     fi
@@ -490,4 +537,9 @@ if [ "$CAT_LOG" = "yes" ]; then
 fi
 echo "+-----------------------------------------------------------------------------+"
 
-restore_state
+# previous filters are restored after the HWPerf data is captured
+if [ x"$METHOD" = "xtool" ]; then
+  restore_state_tool
+else
+  restore_state
+fi

@@ -1,4 +1,4 @@
-version rogueddk_1.18@6276027
+version rogueddk_23.1@6404501
 file /vendor/bin/../etc/init/android.hardware.graphics.allocator@4.0-service.img.rc
 file /vendor/bin/../etc/vintf/manifest/android.hardware.graphics.allocator@4.0.img.xml
 file /vendor/bin/../etc/init/android.hardware.atrace@1.0-service.img.rc
@@ -6,12 +6,8 @@ file /vendor/bin/../etc/vintf/manifest/android.hardware.atrace@1.0-service.img.x
 file /vendor/bin/../etc/init/android.hardware.dumpstate@1.1-service.img.rc
 file /vendor/bin/../etc/vintf/manifest/android.hardware.dumpstate@1.1-service.img.xml
 file /vendor/bin/../etc/vintf/manifest/android.hardware.graphics.mapper@4.0-passthrough.img.xml
-file /vendor/bin/../etc/init/android.hardware.memtrack.aidl.img.rc
-file /vendor/bin/../etc/vintf/manifest/android.hardware.memtrack.aidl.img.xml
 file /vendor/bin/pvrhtbd
 file /vendor/bin/pvrhwperf
 file /vendor/bin/pvrlogdump
 file /vendor/bin/pvrlogsplit
 file /vendor/firmware/rgx.sh.33.15.11.3
-file /vendor/bin/../etc/init/android.hardware.thermal@2.0-service.img.rc
-file /vendor/bin/../etc/vintf/manifest/android.hardware.thermal@2.0.img.xml
