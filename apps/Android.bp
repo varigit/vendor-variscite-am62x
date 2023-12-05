@@ -1,9 +1,0 @@
-android_app_import {
-   name: "cabin_demo",
-   certificate: "platform",
-   apk: "cabin_demo/cabin_demo.apk",
-   optional_uses_libs: [
-       "androidx.window.extensions",
-       "androidx.window.sidecar",
-   ],
-}
